@@ -11,18 +11,18 @@ def verificar_servico(url):
 
         with urlopen(requisicao, timeout=10) as resposta:
             print(f"URL: {url}")
-            print("Resultado: Serviço resposndeu")
+            print("Resultado: Serviço respondeu")
             print(f"Status HTTP: {resposta.status}")
-
-    except (URLError, HTTPError, TimeoutError) as erro:
-        print(f"URL: {url}")
-        print("Resultado: Serviço respondeu")
-        print(f"Status HTTP: {resposta.status}")
 
     except HTTPError as erro:
         print(f"URL: {url}")
-        print("Resultado: Servidor retornou erro HTTP")
+        print("Resultado: Serviço retornou erro HTTP")
         print(f"Status HTTP: {erro.code}")
+
+    except (URLError, TimeoutError, timeout) as erro:
+        print(f"URL: {url}")
+        print("Resultado: Falha na conexão com o servidor")
+        print(f"Detalhes: {erro}")
 
 
 if __name__=="__main__":
