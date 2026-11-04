@@ -2,6 +2,7 @@ import logging
 from urllib.request import Request, urlopen 
 from urllib.error import URLError, HTTPError
 from socket import timeout
+from urllib.parse import urlparse
 
 logging.basicConfig(
     filename="monitor.log",
@@ -41,9 +42,24 @@ def verificar_servico(url):
 
 
 if __name__=="__main__":
-    servicos = ["http://www.google.com","https://www.github.com", "https://www.python.org" 
-    ]
+    print("=== DEVOPS SERVICE MONITOR ===")
 
-    for servico in servicos:
-        verificar_servico(servico)
+
+    while True:
+        url = input("\nDigite uma URL (ou 'sair' para encerrar): ")
+
+        if url.lower() == "sair":
+            print("Monitoramento encerrado.")
+            break
+
+        if not url:
+            print("Erro: Você precisa informar uma URL.")
+            continue 
+        
+        endereco = urlparse(url)
+
+        if endereco.scheme not in ("http", "https") or not endereco.netloc:
+            print("Erro: informe uma URL válida, começando com http:// ou https://.")
+
+        verificar_servico(url)
         print("-" * 40)
