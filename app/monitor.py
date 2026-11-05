@@ -1,8 +1,10 @@
 import logging
+import time 
+
 from urllib.request import Request, urlopen 
 from urllib.error import URLError, HTTPError
-from socket import timeout
 from urllib.parse import urlparse
+
 
 logging.basicConfig(
     filename="monitor.log",
@@ -11,6 +13,18 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
     encoding="utf-8"
 )
+
+def validar_url(url):
+    endereco = urlparse(url)
+
+    return endereco.scheme in ("http", "https") and bool(endereco.netloc)
+
+def adicionar_url(url, urls):
+    if url in urls:
+        return False
+
+    urls.append(url)
+    return True 
 
 def verificar_servico(url):
     requisicao = Request(
@@ -33,7 +47,7 @@ def verificar_servico(url):
 
         logging.error(f"{url} | HTTP {erro.code}")
 
-    except (URLError, TimeoutError, timeout) as erro:
+    except (URLError, TimeoutError) as erro:
         print(f"URL: {url}")
         print("Resultado: Falha na conexão com o servidor")
         print(f"Detalhes: {erro}")
@@ -41,25 +55,63 @@ def verificar_servico(url):
         logging.error(f"{url} | Falha de conexão: {erro}")
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     print("=== DEVOPS SERVICE MONITOR ===")
 
+    urls = []
 
     while True:
-        url = input("\nDigite uma URL (ou 'sair' para encerrar): ")
+        url = input("\nDigite uma URL (ou 'iniciar' para continuar, 'sair' para encerrar): ").strip()
 
         if url.lower() == "sair":
             print("Monitoramento encerrado.")
+            raise SystemExit
+
+        if url.lower() == "iniciar":
+            if not urls:
+                print("Erro: cadastre pelo menos uma URL.")
+                continue
             break
 
         if not url:
             print("Erro: Você precisa informar uma URL.")
-            continue 
-        
-        endereco = urlparse(url)
+            continue
 
-        if endereco.scheme not in ("http", "https") or not endereco.netloc:
+        if not validar_url(url):
             print("Erro: informe uma URL válida, começando com http:// ou https://.")
+            continue
 
-        verificar_servico(url)
-        print("-" * 40)
+        if url in urls:
+            print("Essa URL já foi cadastrada!")
+            continue 
+        urls.append(url)
+        print(f"URL cadastrada: {url}")
+
+    print("\nURLs cadastradas:")
+    for item in urls:
+        print(f"- {item}")
+
+    print("\nEscolha o modo de monitoramento:")
+    print("1 - Monitoramento único")
+    print("2 - Monitoramento contínuo")
+
+    modo = input("\nDigite sua opção: ").strip()
+
+    if modo == "1":
+        print("\nIniciando monitoramento único...\n")
+        for item in urls:
+            verificar_servico(item)
+
+    elif modo == "2":
+        print("\nIniciando monitoramento contínuo... (Ctrl+C para parar)\n")
+        try:
+            while True:
+                for item in urls:
+                    verificar_servico(item)
+                print("\nAguardando 30 segundos...\n")
+                time.sleep(30)
+        except KeyboardInterrupt:
+            print("\nMonitoramento encerrado.")
+
+    else:
+        print("Opção inválida.")
