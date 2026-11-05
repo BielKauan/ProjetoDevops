@@ -1,28 +1,36 @@
 # DevOps Service Monitor
 
-Projeto prático de monitoramento de serviços web desenvolvido em Python, com testes automatizados e integração contínua (CI) usando GitHub Actions.
+Projeto prático de monitoramento de serviços web desenvolvido em Python, com testes automatizados e integração contínua (CI) utilizando GitHub Actions.
 
-## Objetivo
+## Objetivo 
 
-Verificar a disponibilidade de serviços web, identificar respostas HTTP e tratar falhas de conexão. O projeto demonstra conceitos fundamentais de automação, testes de software e práticas de DevOps.
+Desenvolver uma aplicação capaz de monitorar a disponibilidade de serviços web, identificar respostas HTTP, registrar eventos e tratar falhas de conexão.
+
+O projeto tem como objetivo aplicar conceitos de programação, automação, testes de software e práticas de DevOps.
 
 ## Tecnologias utilizadas
 
-- **Python** — implementação do monitoramento.
+- **Python** — desenvolvimento da aplicação.
 - **pytest** — execução de testes automatizados.
-- **unittest.mock** — simulação de respostas e falhas durante os testes.
+- **unittest.mock** — simulação de respostas HTTP e falhas durante os testes.
 - **Git e GitHub** — versionamento e hospedagem do código.
-- **GitHub Actions** — automação da execução dos testes por meio de integração contínua (CI).
+- **GitHub Actions** — automação dos testes por meio de integração contínua (CI).
 
 ## Funcionalidades
 
-- Verificação de serviços por meio de requisições HTTP.
+- Monitoramento de serviços por meio de requisições HTTP.
 - Identificação de respostas HTTP bem-sucedidas.
 - Tratamento de erros HTTP.
 - Tratamento de falhas de conexão e timeout.
-- Testes automatizados sem depender de falhas reais nos serviços externos.
+- Validação de URLs HTTP e HTTPS.
+- Bloqueio de URLs duplicadas durante a execução.
+- Cadastro de múltiplos serviços.
+- Monitoramento único ou contínuo.
+- Verificação automática a cada 30 segundos no modo contínuo.
+- Registro de eventos em arquivo de log (`monitor.log`).
+- Identificação das requisições por meio de User-Agent.
 
-## Estrutura do projeto
+## Estrutura do projeto 
 
 ```text
 ProjetoDevops/
@@ -32,6 +40,7 @@ ProjetoDevops/
 │   └── monitor.py
 ├── tests/
 │   └── test_monitor.py
+├── monitor.log
 ├── requirements.txt
 ├── .gitignore
 └── README.md
@@ -42,39 +51,57 @@ ProjetoDevops/
 ### 1. Pré-requisitos
 
 - Python instalado.
-- Git instalado, caso deseje clonar o repositório.
+- Git instalado (opcional, caso deseje clonar o repositório).
 
 ### 2. Instalar as dependências
 
-No terminal, na pasta do projeto, execute:
+No PowerShell, dentro da pasta do projeto:
 
-```bash
+```powershell
 python -m pip install -r requirements.txt
 ```
 
-### 3. Executar o monitor
+### 3. Executar a aplicação
 
-```bash
-python -m app.monitor
+```powershell
+python app/monitor.py
 ```
 
 ### 4. Executar os testes automatizados
 
-```bash
+```powershell
 python -m pytest -v
 ```
 
-## Integração contínua
+## Integração contínua (CI)
 
-O projeto utiliza GitHub Actions para automatizar a execução dos testes. Isso ajuda a identificar problemas no código durante o processo de desenvolvimento.
+O projeto utiliza GitHub Actions para executar automaticamente os testes automatizados.
+
+Essa integração permite verificar se as alterações no código mantêm o funcionamento esperado da aplicação.
+
+## Testes automatizados
+
+Atualmente, o projeto possui 9 testes automatizados, cobrindo:
+
+- Disponibilidade de serviços.
+- Erros HTTP.
+- Falhas de conexão.
+- Registro de logs.
+- Cabeçalho User-Agent e timeout.
+- Validação de URLs.
+- Identificação de URLs duplicadas.
+- Cadastro de novos endereços.
 
 ## Aprendizados
 
-Este projeto faz parte dos meus estudos práticos em DevOps, com foco em Python, automação, testes, controle de versão e integração contínua.
+Este projeto faz parte da minha evolução prática na área de tecnologia, com foco em DevOps, automação, Python, testes automatizados, controle de versão e integração contínua.
 
 ## Próximas melhorias
 
-- Adicionar registro de eventos em arquivos de log.
-- Permitir configurar os serviços monitorados.
-- Integrar Docker ao projeto.
-- Evoluir o pipeline de CI/CD.
+- Aprimorar o armazenamento do histórico de monitoramento.
+- Integrar Docker para execução em contêineres.
+- Implementar infraestrutura como código utilizando Terraform.
+- Expandir o pipeline de CI/CD.
+- Explorar GitLab CI/CD.
+- Desenvolver uma interface web para visualização dos serviços monitorados.
+
